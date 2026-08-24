@@ -2,32 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
     public static $products = [
-        [
-            'id' => '1',
-            'name' => 'TV',
-            'description' => 'Best TV'
-        ],
-        [
-            'id' => '2',
-            'name' => 'iPhone',
-            'description' => 'Best iPhone'
-        ],
-        [
-            'id' => '3',
-            'name' => 'Chromecast',
-            'description' => 'Best Chromecast'
-        ],
-        [
-            'id' => '4',
-            'name' => 'Glasses',
-            'description' => 'Best Glasses'
-        ]
+        ['id' => '1', 'name' => 'TV', 'description' => 'Best TV'],
+        ['id' => '2', 'name' => 'iPhone', 'description' => 'Best iPhone'],
+        ['id' => '3', 'name' => 'Chromecast', 'description' => 'Best Chromecast'],
+        ['id' => '4', 'name' => 'Glasses', 'description' => 'Best Glasses'],
     ];
 
     public function index(): View
@@ -36,7 +22,7 @@ class ProductController extends Controller
 
         $viewData['title'] = 'Products - Online Store';
         $viewData['subtitle'] = 'List of products';
-        $viewData['products'] = ProductController::$products;
+        $viewData['products'] = Product::all();
 
         return view('product.index')
             ->with('viewData', $viewData);
@@ -46,7 +32,7 @@ class ProductController extends Controller
     {
         $viewData = [];
 
-        $product = ProductController::$products[$id - 1];
+        $product = Product::findOrFail($id);
 
         $viewData['title'] = $product['name'] . ' - Online Store';
         $viewData['subtitle'] = $product['name'] . ' - Product information';
@@ -66,15 +52,17 @@ class ProductController extends Controller
             ->with('viewData', $viewData);
     }
 
-    public function save(Request $request)
+    public function save(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required',
-            'price' => 'required'
+            'price' => 'required|integer',
         ]);
 
-        dd($request->all());
+        Product::create(
+            $request->only(['name', 'price'])
+        );
 
-        // Aquí iría el código para guardar el producto en la base de datos.
+        return back();
     }
 }
