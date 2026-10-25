@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 
 // Página Home
 Route::get('/', [HomeController::class, 'index'])
@@ -37,3 +38,13 @@ Route::post('/products/save', [ProductController::class, 'save'])
 // Mostrar un producto particular
 Route::get('/products/{id}', [ProductController::class, 'show'])
     ->name('product.show');
+
+// Carrito de compras
+Route::get('/cart', [CartController::class, 'index'])
+    ->name('cart.index');
+
+Route::get('/cart/add/{id}', [CartController::class, 'add'])
+    ->name('cart.add');
+
+Route::get('/cart/removeAll', [CartController::class, 'removeAll'])
+    ->name('cart.removeAll');
